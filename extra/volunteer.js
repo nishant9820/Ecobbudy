@@ -1,0 +1,58 @@
+export default [
+  {
+    id: "1",
+    title: "Let's go green",
+    location: "Juhu Beach",
+    date: "March 25,2024",
+    Price: "Free",
+    description:
+      "Juhu Beach Clean Drive is a community initiative aimed at preserving the natural beauty of one of Mumbai's iconic coastal areas. Local volunteers come together regularly to participate in organized clean-up activities, fostering a sense of environmental responsibility and community engagement. The initiative involves the removal of litter, plastic waste, and debris from the beach, contributing to a cleaner and healthier ecosystem.",
+    image: require("../assets/volunteer/Beach.jpg"),
+    image2: require("../assets/volunteer/mumbai.jpg"),
+    order: "CLD09738PL",
+    time: "9:00 PM",
+    meeting_point: "JW Marriot Hotel",
+  },
+  {
+    id: "2",
+    title: "Green Lifestyle Challenges",
+    location: "Juhu Beach",
+    date: "March 25,2024",
+    Price: "Free",
+    description: "Offering eco-friendly challenges and goals to users ",
+    image: require("../assets/volunteer/Beach.jpg"),
+    image2: require("../assets/volunteer/mumbai.jpg"),
+    order: "CLD09738PL",
+    time: "9:00 PM",
+    meeting_point: "JW Marriot Hotel",
+  },
+  {
+    id: "3",
+    title: "Product Eco-Ratings",
+    location: "Juhu Beach",
+    date: "March 25,2024",
+    Price: "Free",
+    description: "Let's Promote and use eco-friendly products ",
+    image: require("../assets/volunteer/Beach.jpg"),
+    image2: require("../assets/volunteer/mumbai.jpg"),
+    order: "CLD09738PL",
+    time: "9:00 PM",
+    meeting_point: "JW Marriot Hotel",
+  },
+  {
+    id: "4",
+    title: "Environmental News ",
+    location: "Juhu Beach",
+    date: "March 25,2024",
+    Price: "Free",
+    description:
+      "Access to curated feed of environmental news, updates and activism hub",
+    image: require("../assets/volunteer/Beach.jpg"),
+    image2: require("../assets/volunteer/mumbai.jpg"),
+    order: "CLD09738PL",
+    time: "9:00 PM",
+    meeting_point: "JW Marriot Hotel",
+  },
+];
+
+// #089817
