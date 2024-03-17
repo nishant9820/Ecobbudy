@@ -1,8 +1,74 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth, store } from "../../firebase/firebase";
+const Image1 = () => {
+  const navigation = useNavigation();
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const isFocused = useIsFocused();
+  const [userName, setUserName] = useState("");
+  const [ChallengeCounter, setChallengeCounter] = useState(Number);
+  useEffect(() => {
+    const getDetails = async () => {
+      const userId = await AsyncStorage.getItem("USERID");
+      const user = await getDoc(doc(store, "users", userId));
+      setUserName(user.data().name);
+      // setEmail(user.data().email);
+      setChallengeCounter(user.data().saveenergy);
+      setLoading(false);
+    };
+    getDetails();
+  }, [isFocused]);
+  const numberFireChallengeCounter = parseInt(ChallengeCounter);
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-const Image = () => {
+      if (!result.cancelled) {
+        setImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Error picking image: ", error);
+    }
+  };
+
+  const handleContinue = () => {
+    if (image) {
+      // Continue with your logic here
+      Alert.alert("Congratulations on completing daily task!");
+      const updatedCounter = numberFireChallengeCounter + 10;
+      setLoading(true);
+      setTimeout(async () => {
+        const userId = await AsyncStorage.getItem("USERID");
+        await updateDoc(doc(store, "users", userId), {
+          saveenergy: updatedCounter,
+        });
+        setLoading(false); // Reset loading state
+      }, 2000);
+
+      navigation.navigate("Challenges", { imageUri: image });
+    } else {
+      Alert.alert("Please select an image!");
+    }
+  };
+
   return (
     <View
       style={{
@@ -19,7 +85,7 @@ const Image = () => {
           marginTop: "10%",
         }}
       >
-        Detect Image
+        Detect Image{ChallengeCounter}
       </Text>
       <View style={{ rowGap: 10 }}>
         <View
@@ -30,7 +96,13 @@ const Image = () => {
             borderWidth: 1,
             borderRadius: 10,
           }}
-        />
+        >
+          <Image
+            alt="Not find"
+            source={{ uri: image }}
+            style={{ height: "100%", width: "100%" }}
+          />
+        </View>
         <View
           style={{
             flexDirection: "row",
@@ -39,16 +111,18 @@ const Image = () => {
             columnGap: 8,
           }}
         >
-          <Text
-            style={{
-              borderBottomWidth: 1,
+          <TouchableOpacity onPress={pickImage}>
+            <Text
+              style={{
+                borderBottomWidth: 1,
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              Pick Image
+            </Text>
+          </TouchableOpacity>
 
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            Pick Image
-          </Text>
           <MaterialIcons
             name="camera"
             style={{ marginTop: 7 }}
@@ -58,6 +132,7 @@ const Image = () => {
         </View>
       </View>
       <TouchableOpacity
+        onPress={handleContinue}
         style={{
           width: "90%",
           backgroundColor: "#000",
@@ -68,13 +143,13 @@ const Image = () => {
         }}
       >
         <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>
-          Continue
+          Submit
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default Image;
+export default Image1;
 
 const styles = StyleSheet.create({});

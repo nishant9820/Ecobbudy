@@ -10,20 +10,20 @@ export default [
     id: "2",
     title: "Green Lifestyle Challenges",
     description: "Offering eco-friendly challenges and goals to users ",
-    image: require("../assets/onboardingImages/earth.png"),
+    image: require("../assets/onboardingImages/ON2.png"),
   },
   {
     id: "3",
     title: "Product Eco-Ratings",
     description: "Let's Promote and use eco-friendly products ",
-    image: require("../assets/onboardingImages/earth.png"),
+    image: require("../assets/onboardingImages/Rating.png"),
   },
   {
     id: "4",
     title: "Environmental News ",
     description:
       "Access to curated feed of environmental news, updates and activism hub",
-    image: require("../assets/onboardingImages/earth.png"),
+    image: require("../assets/onboardingImages/news.png"),
   },
 ];
 

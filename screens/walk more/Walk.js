@@ -18,6 +18,22 @@ const StepCounter = () => {
   const [lastStepTime, setLastStepTime] = useState(0);
   const [distance, setDistance] = useState(0);
   const averageStepLength = 0.76;
+  const MET = 3.5; // Metabolic Equivalent of Task for walking (approximate value)
+  const caloriesPerMinute = 0.035; // Calories burned per minute (approximate value)
+
+  const calculateCaloriesBurned = (distanceInMeters) => {
+    const timeInMinutes = (distanceInMeters / (averageStepLength * steps)) * 60; // Assuming a constant walking speed
+    const caloriesBurned = MET * timeInMinutes * caloriesPerMinute;
+    return caloriesBurned.toFixed(2);
+  };
+
+  const carbonDioxideSavedPerMeter = 0.0002; // Replace with the appropriate value for carbon dioxide saved per meter
+
+  const calculateCarbonDioxideSaved = (distanceInMeters) => {
+    const carbonDioxideSaved = distanceInMeters * carbonDioxideSavedPerMeter;
+    return carbonDioxideSaved.toFixed(2);
+  };
+  const [loading, setLoading] = useState(true); // new state variable
 
   useEffect(() => {
     const getDetails = async () => {
@@ -27,7 +43,9 @@ const StepCounter = () => {
       setName(user.data().name);
       setFireSteps(user.data().steps);
       setFireDistance(user.data().distancewalked);
+      setLoading(false); // set loading to false once data is fetched
     };
+
     getDetails();
   }, [isFocused]);
   useEffect(() => {
@@ -86,29 +104,36 @@ const StepCounter = () => {
   const CurrentSteps = fireSteps + steps;
   const CurrentDistance = fireDistance + distance;
   // const setSendSteps = cuurentSteps;
+
   useEffect(() => {
-    const timeout = setInterval(() => {
-      const setDetails = async () => {
-        const distanceWalked = Number(CurrentDistance);
-        const steps = Number(CurrentSteps);
-        const points = Number(newpoints);
-        const email = await AsyncStorage.getItem("EMAIL");
-        const userId = await AsyncStorage.getItem("USERID");
+    if (!loading) {
+      // only update state when data is loaded
+      const CurrentSteps = fireSteps + steps;
+      const CurrentDistance = fireDistance + distance;
 
-        await updateDoc(doc(store, "users", userId), {
-          distancewalked: distanceWalked,
-          steps: steps,
-          walkpoints: points,
-        }).catch((error) => {
-          console.log(error.message);
-        });
-      };
+      const timeout = setInterval(() => {
+        const setDetails = async () => {
+          const distanceWalked = Number(CurrentDistance);
+          const steps = Number(CurrentSteps);
+          const points = Number(newpoints);
+          const email = await AsyncStorage.getItem("EMAIL");
+          const userId = await AsyncStorage.getItem("USERID");
 
-      setDetails();
-    }, 1000); // Update every 1 second
+          await updateDoc(doc(store, "users", userId), {
+            distancewalked: distanceWalked,
+            steps: steps,
+            walkpoints: points,
+          }).catch((error) => {
+            console.log(error.message);
+          });
+        };
 
-    return () => clearInterval(timeout);
-  }, [CurrentDistance, CurrentSteps]);
+        setDetails();
+      }, 1000); // Update every 1 second
+
+      return () => clearInterval(timeout);
+    }
+  }, [loading, CurrentDistance, CurrentSteps]);
 
   // // const DistanceNumber = parseFloat(fireDistance);
   const newpoints = CurrentSteps;
@@ -189,7 +214,7 @@ const StepCounter = () => {
         </View>
         <View style={{ alignSelf: "center" }}>
           <Text style={{ color: "#C8F0E7", fontWeight: "600" }}>
-            {CurrentDistance} kcal
+            {calculateCaloriesBurned(CurrentDistance)} kcal
           </Text>
           <Text style={{ color: "#C8F0E7" }}>Calorie burned</Text>
         </View>
@@ -226,7 +251,7 @@ const StepCounter = () => {
         </View>
         <View style={{ alignSelf: "center" }}>
           <Text style={{ color: "#D1E8F0", fontWeight: "600" }}>
-            {CurrentDistance} m
+            {CurrentDistance} met
           </Text>
           <Text style={{ color: "#D1E8F0" }}>Distance travelled</Text>
         </View>
@@ -263,11 +288,12 @@ const StepCounter = () => {
         </View>
         <View style={{ alignSelf: "center" }}>
           <Text style={{ color: "#4B6258", fontWeight: "600" }}>
-            {CurrentDistance} m
+            {calculateCarbonDioxideSaved(CurrentDistance)} m
           </Text>
           <Text style={{ color: "#4B6258" }}>Carbon dioxide saved</Text>
         </View>
       </View>
+      <View style={{ height: 100 }} />
       {/* <Text style={styles.header}>
         <Icon name="user" size={30} color="#2C3E50" /> {name}
       </Text>

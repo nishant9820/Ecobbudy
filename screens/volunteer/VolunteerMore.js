@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import volunteer from "../../extra/volunteer";
+import events from "../../extra/events";
 import VolunteerItem from "../../components/volunteer/VolunteerItem";
 import VolunteerItem2 from "../../components/volunteer/VolunteerItem2";
 const VolunteerMore = () => {
@@ -119,7 +120,7 @@ const VolunteerMore = () => {
         </Text>
       </View>
       <FlatList
-        data={volunteer}
+        data={events}
         // horizontal
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => <VolunteerItem2 item={item} />}

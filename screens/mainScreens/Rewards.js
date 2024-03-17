@@ -11,22 +11,42 @@ import React, { useState, useEffect } from "react";
 import gameData from "../../extra/gameData";
 import GameItem from "../../components/game/GameItem";
 // import call from "react-native-phone-call";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import {
   collection,
   deleteDoc,
   doc,
-  getDocs,
+  getDoc,
   onSnapshot,
   query,
 } from "firebase/firestore";
 import { auth, store } from "../../firebase/firebase";
 import UserAvatar from "react-native-user-avatar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import * as Clipboard from "expo-clipboard";
 const Rewards = () => {
-  console.log("gameData");
+  const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [imageUrl, setImageUrl] = useState("");
   const [points, getPoints] = useState("");
+  const isFocused = useIsFocused();
+  const handlePress = () => {
+    Clipboard.setString("ABC678BDC");
+    console.log("Text copied to clipboard: ABC678BDC");
+  };
+
+  useEffect(() => {
+    const getDetails = async () => {
+      const userId = await AsyncStorage.getItem("USERID");
+      const user = await getDoc(doc(store, "users", userId));
+      // setUserName(user.data().name);
+      // setEmail(user.data().email);
+      getPoints(user.data().totalpoints);
+      setLoading(false);
+    };
+    getDetails();
+  }, [isFocused]);
 
   useEffect(() => {
     const q = collection(store, "users");
@@ -35,16 +55,16 @@ const Rewards = () => {
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
         // Convert walkpoints to a number
-        const walkpoints = parseInt(userData.walkpoints, 10);
+        const totalpoints = parseInt(userData.totalpoints, 10);
         tempData.push({
           id: doc.id,
           ...userData,
-          walkpoints,
+          totalpoints,
           data: doc.data(),
         });
       });
       // Sort users by walkpoints in descending order
-      tempData.sort((a, b) => b.walkpoints - a.walkpoints);
+      tempData.sort((a, b) => b.totalpoints - a.totalpoints);
       setUsers(tempData);
     });
 
@@ -79,6 +99,9 @@ const Rewards = () => {
               Rewards
             </Text>
           </View>
+          <Text style={{ alignSelf: "flex-start", fontSize: 15 }}>
+            10% Discount
+          </Text>
         </View>
         <View>
           <Image
@@ -89,9 +112,11 @@ const Rewards = () => {
       </View>
 
       <View style={{ marginTop: "7%", marginStart: 15 }}>
-        <Text style={{ fontSize: 20, fontWeight: 600 }}>Gaming Zone</Text>
+        <Text style={{ fontSize: 20, fontWeight: 600 }}>
+          Gaming Zone{points}
+        </Text>
       </View>
-      <View style={{ elevation: 5 }}>
+      <View style={{ elevation: 5, marginLeft: 15 }}>
         <FlatList
           data={gameData}
           keyExtractor={(item) => item.id}
@@ -99,6 +124,301 @@ const Rewards = () => {
           renderItem={({ item }) => <GameItem item={item} />}
         />
       </View>
+      <View style={{ marginTop: "7%", marginStart: 15 }}>
+        <Text style={{ fontSize: 20, fontWeight: 600 }}>Rewards</Text>
+      </View>
+      <ScrollView horizontal style={{ flexDirection: "row", padding: 15 }}>
+        {points > 100 ? (
+          <TouchableOpacity
+            onPress={handlePress}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 100 points
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => alert("Not Enough Points")}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 100 points
+            </Text>
+          </TouchableOpacity>
+        )}
+        {points > 500 ? (
+          <TouchableOpacity
+            onPress={handlePress}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 500 points
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => alert("Not Enough Points")}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 500 points
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {points > 1000 ? (
+          <TouchableOpacity
+            onPress={handlePress}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 1000 points
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => alert("Not Enough Points")}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 1000 points
+            </Text>
+          </TouchableOpacity>
+        )}
+        {points > 1500 ? (
+          <TouchableOpacity
+            onPress={handlePress}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 1500 points
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => alert("Not Enough Points")}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 1500 points
+            </Text>
+          </TouchableOpacity>
+        )}
+        {points > 2000 ? (
+          <TouchableOpacity
+            onPress={handlePress}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 2000 points
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => alert("Not Enough Points")}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 2000 points
+            </Text>
+          </TouchableOpacity>
+        )}
+        {points > 2500 ? (
+          <TouchableOpacity
+            onPress={handlePress}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 2500 points
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => alert("Not Enough Points")}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 2500 points
+            </Text>
+          </TouchableOpacity>
+        )}
+        {points > 3000 ? (
+          <TouchableOpacity
+            onPress={handlePress}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+              marginRight: 20,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 3000 points
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => alert("Not Enough Points")}
+            style={{
+              width: 150,
+              height: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              zIndex: 99,
+              elevation: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              marginLeft: 10,
+              marginBottom: 10,
+              marginRight: 20,
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              At 3000 points
+            </Text>
+          </TouchableOpacity>
+        )}
+      </ScrollView>
       <View style={{ marginTop: "7%", marginStart: 15 }}>
         <Text style={{ fontSize: 20, fontWeight: 600 }}>Leaderboard</Text>
       </View>
@@ -152,7 +472,7 @@ const Rewards = () => {
                     }}
                   >
                     <Text style={{ marginRight: 3 }}>
-                      {item.data.walkpoints}
+                      {item.data.totalpoints}
                     </Text>
                     <Text style={{ marginRight: 3 }}>Ecos</Text>
                     <MaterialCommunityIcons

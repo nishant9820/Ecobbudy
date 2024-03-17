@@ -11,6 +11,7 @@ import React from "react";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 const Challenges = () => {
   const navigation = useNavigation();
+
   return (
     <ScrollView>
       <View
@@ -77,7 +78,7 @@ const Challenges = () => {
             }}
           />
           <Text style={{ color: "#000", marginLeft: 10, fontWeight: "bold" }}>
-            Buy an ecofriendly product
+            Plant a Tree
           </Text>
         </TouchableOpacity>
         <TouchableOpacity

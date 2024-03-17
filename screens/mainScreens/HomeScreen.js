@@ -15,7 +15,7 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { signOut } from "firebase/auth";
 import PieChart from "react-native-pie-chart";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import Newsitem from "../../components/news/Newsitem";
 import { FlatList } from "react-native";
 
@@ -31,10 +31,18 @@ HomeScreen = () => {
   const [pinkpoints, setPinkpoints] = useState(0);
   const widthAndHeight = 100;
   const seriesnull = [];
-
   const [news, setNews] = useState([]);
   const [points, getPoints] = useState("");
   const [timePoints, setTimePoints] = useState(null);
+
+  setTimeout(async () => {
+    const userId = await AsyncStorage.getItem("USERID");
+    await updateDoc(doc(store, "users", userId), {
+      totalpoints: TotalPoints,
+    });
+    setLoading(false); // Reset loading state
+  }, 2000);
+
   useEffect(() => {
     // Replace 'YOUR_API_KEY' with your actual News API key
     const apiKey = "65e13369d8ce42cc9ac56565f4b78d06";
@@ -57,14 +65,16 @@ HomeScreen = () => {
       const user = await getDoc(doc(store, "users", userId));
       setName(user.data().name);
       getPoints(user.data().walkpoints);
-      setOrangepoints(user.data().walkmore || 0);
+      setOrangepoints(user.data().walkpoints || 0);
       setYellowpoints(user.data().shopwisely || 0);
       setBluepoints(user.data().plantatree || 0);
       setPinkpoints(user.data().saveenergy || 0);
     };
     getDetails();
   }, [isFocused]);
-  const TotalPoints = points + timePoints;
+  const TotalPoints =
+    orangepoints + timePoints + yellowpoints + bluepoints + pinkpoints;
+
   const logOut = async () => {
     await AsyncStorage.setItem("EMAIL", "");
     await AsyncStorage.setItem("USERID", "");
@@ -114,10 +124,13 @@ HomeScreen = () => {
             size={29}
             // color={colour ? colour : "#ffffff40"}
           />
-          <Text>{timePoints}</Text>
+          {/* <Text>{timePoints}</Text> */}
         </View>
         <View style={styles.rightHeader}>
-          <View style={styles.pointsCounterView}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Leadboard")}
+            style={styles.pointsCounterView}
+          >
             <Text style={{ marginRight: 3 }}>{TotalPoints}</Text>
             <Text style={{ marginRight: 3 }}>Ecos</Text>
             <MaterialCommunityIcons
@@ -126,7 +139,7 @@ HomeScreen = () => {
               color={"green"}
               size={20}
             />
-          </View>
+          </TouchableOpacity>
           <MaterialCommunityIcons
             name="bell"
             color={"black"}
@@ -218,15 +231,6 @@ HomeScreen = () => {
               // borderColor: "#fff",
             }}
           >
-            {/* <PieChart
-              widthAndHeight={widthAndHeight}
-              series={series}
-              sliceColor={sliceColor}
-              coverRadius={0.75}
-              coverFill={"#013303"}
-              doughnut={true}
-              delay={6000}
-            /> */}
             {total > 0 ? (
               <PieChart
                 widthAndHeight={widthAndHeight}
@@ -264,7 +268,7 @@ HomeScreen = () => {
             </View>
             <View style={{ flexDirection: "row", marginTop: 2 }}>
               <View style={{ ...styles.infoCircel, backgroundColor: "pink" }} />
-              <Text style={styles.infoText}>Save Energy</Text>
+              <Text style={styles.infoText}>Daily Challenge</Text>
             </View>
             <View style={{ flexDirection: "row", marginTop: 2 }}>
               <View
@@ -302,14 +306,13 @@ HomeScreen = () => {
                 width: 50,
                 borderRadius: 30,
                 alignItems: "center",
+                justifyContent: "center",
                 backgroundColor: "#FFBC9B",
               }}
             >
-              <MaterialCommunityIcons
-                name="bell"
-                style={{ marginTop: 7 }}
-                color={"black"}
-                size={31}
+              <Image
+                source={require("../../assets/shop.png")}
+                style={{ height: 35, width: 35, alignSelf: "center" }}
               />
             </View>
             <Text style={{ marginTop: 5, fontWeight: "bold" }}>
@@ -317,7 +320,10 @@ HomeScreen = () => {
             </Text>
             <Text style={{ marginTop: 5 }}>Eco Store</Text>
           </TouchableOpacity>
-          <View style={{ ...styles.cardContainer, backgroundColor: "#FFE0FF" }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("DonateMore")}
+            style={{ ...styles.cardContainer, backgroundColor: "#FFE0FF" }}
+          >
             <View
               style={{
                 height: 50,
@@ -329,7 +335,7 @@ HomeScreen = () => {
               }}
             >
               <Image
-                source={require("../../assets/donation.png")}
+                source={require("../../assets/Donate.png")}
                 style={{ height: 35, width: 35, alignSelf: "center" }}
               />
             </View>
@@ -337,8 +343,11 @@ HomeScreen = () => {
               Donate More
             </Text>
             <Text style={{ marginTop: 5 }}>EcoStar</Text>
-          </View>
-          <View style={{ ...styles.cardContainer, backgroundColor: "#E1FFE0" }}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("PlantTree")}
+            style={{ ...styles.cardContainer, backgroundColor: "#E1FFE0" }}
+          >
             <View
               style={{
                 height: 50,
@@ -346,20 +355,19 @@ HomeScreen = () => {
                 borderRadius: 30,
                 alignItems: "center",
                 backgroundColor: "#BBFF9B",
+                justifyContent: "center",
               }}
             >
-              <MaterialCommunityIcons
-                name="pine-tree"
-                style={{ marginTop: 7 }}
-                color={"black"}
-                size={31}
+              <Image
+                source={require("../../assets/Tree.png")}
+                style={{ height: 35, width: 35, alignSelf: "center" }}
               />
             </View>
             <Text style={{ marginTop: 5, fontWeight: "bold" }}>
               Plant a Tree
             </Text>
             <Text style={{ marginTop: 5 }}>EcoTree</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={{ rowGap: 10, marginTop: "5%" }}>
           <TouchableOpacity
@@ -377,12 +385,6 @@ HomeScreen = () => {
                 display: "flex",
               }}
             >
-              {/* <MaterialCommunityIcons
-                name="bell"
-                style={{ marginTop: 7 }}
-                color={"black"}
-                size={31}
-              /> */}
               <Image
                 source={require("../../assets/trophy.png")}
                 resizeMode="contain"
@@ -430,13 +432,13 @@ HomeScreen = () => {
                 borderRadius: 30,
                 alignItems: "center",
                 backgroundColor: "#9BA9FF",
+
+                justifyContent: "center",
               }}
             >
-              <MaterialCommunityIcons
-                name="walk"
-                style={{ marginTop: 10 }}
-                color={"black"}
-                size={31}
+              <Image
+                source={require("../../assets/Walk.png")}
+                style={{ height: 35, width: 35, alignSelf: "center" }}
               />
             </View>
             <Text style={{ marginTop: 5, fontWeight: "bold" }}>Walk More</Text>

@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -49,6 +50,83 @@ const ShopWisely = () => {
           Special Deals
         </Text>
         <ScrollView horizontal style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            style={{ width: 200, margin: 15, elevation: 5 }}
+            onPress={() => alert("Coming Soon")}
+          >
+            <ImageBackground
+              style={{
+                width: 200,
+                height: 109,
+                alignSelf: "center",
+                borderRadius: 25 / 2,
+                overflow: "hidden",
+              }}
+              source={require("../../assets/TBrand.jpg")}
+              resizeMode="stretch"
+            >
+              <View
+                style={{
+                  // position: "absolute",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  zIndex: 100,
+                  alignSelf: "center",
+                  padding: 15,
+                  width: "100%",
+                  height: "100%",
+                  // bottom: 18,
+                  // borderRadius: 25 / 2,
+                  opacity: 0.2,
+                }}
+              >
+                <Text
+                  style={{ fontWeight: "bold", fontSize: 15, color: "#00332b" }}
+                >
+                  Apparels
+                </Text>
+                <Text style={{ fontSize: 12, color: "#00332b" }}>
+                  18 Brands
+                </Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert("Coming Soon")}>
+            <ImageBackground
+              style={{
+                width: 200,
+                height: 109,
+                elevation: 5,
+                alignSelf: "center",
+                borderRadius: 25 / 2,
+                marginTop: 15,
+                overflow: "hidden",
+              }}
+              source={require("../../assets/Handicraft.jpg")}
+              resizeMode="cover"
+            >
+              <View
+                style={{
+                  // position: "absolute",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  zIndex: 100,
+                  alignSelf: "center",
+                  padding: 15,
+                  width: "99%",
+                  height: "100%",
+                  // bottom: 18,
+                  // borderRadius: 25 / 2,
+                  opacity: 0.5,
+                }}
+              >
+                <Text
+                  style={{ fontWeight: "bold", fontSize: 15, color: "#fff" }}
+                >
+                  Handicrafts
+                </Text>
+                <Text style={{ fontSize: 12, color: "#fff" }}>25 Brands</Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
           <TouchableOpacity
             style={{
               elevation: 8,

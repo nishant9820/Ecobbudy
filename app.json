@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "EcoBuddy",
-    "slug": "EcoBuddy",
+    "slug": "ecobuddy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +20,11 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "permissions": ["CAMERA_ROLL", "CAMERA"],
+      "permissions": [
+        "android.permission.CAMERA_ROLL",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -32,14 +36,14 @@
     },
     "extra": {
       "eas": {
-        "projectId": "d40b56eb-9920-4976-8fef-bac6fd4bc63f"
+        "projectId": "a7d18e42-5e98-4f87-9fe8-6c4d9ad793c1"
       }
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/d40b56eb-9920-4976-8fef-bac6fd4bc63f"
+      "url": "https://u.expo.dev/a7d18e42-5e98-4f87-9fe8-6c4d9ad793c1"
     },
     "plugins": [
       [
@@ -48,6 +52,7 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "owner": "nishant2"
   }
 }

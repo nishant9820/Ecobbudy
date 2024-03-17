@@ -17,10 +17,10 @@ const GameItem = ({ item }) => {
       >
         <Image
           source={item.image}
-          style={{ height: 180, width: 180 }}
-          resizeMode="contain"
+          style={{ height: 170, width: 170 }}
+          resizeMode="cover"
         />
-        <Text style={{ fontWeight: "bold", fontSize: 15 }}>{item.title}</Text>
+        {/* <Text style={{ fontWeight: "bold", fontSize: 15 }}>{item.title}</Text> */}
       </TouchableOpacity>
     </View>
   );
@@ -30,12 +30,12 @@ export default GameItem;
 
 const styles = StyleSheet.create({
   productContainer: {
-    borderRadius: 10,
+    borderRadius: 30,
     margin: 10,
     alignItems: "center",
     zIndex: 99,
     elevation: 6,
-    padding: 4,
+    // padding: 4,
     backgroundColor: "#fff",
   },
 });

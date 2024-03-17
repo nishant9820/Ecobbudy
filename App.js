@@ -18,6 +18,12 @@ import LocationDetails from "./components/volunteer/LocationDetails";
 import Ticket from "./components/volunteer/Ticket";
 import Challenges from "./screens/challenges/Challenges";
 import Image from "./screens/challenges/Image";
+import DonateMore from "./screens/donate/DonateMore";
+import Leadboard from "./screens/leadboard/Leadboard";
+import DonatePay from "./screens/donate/DonatePay";
+import AI from "./screens/ai/AI";
+import PlantTree from "./screens/planttree/PlantTree";
+import PlantPay from "./screens/planttree/PlantPay";
 
 LogBox.ignoreLogs(["Warning: ..."]);
 
@@ -88,6 +94,36 @@ const App = () => {
           <stack.Screen
             name="Image"
             component={Image}
+            options={{ headerShown: false }}
+          />
+          <stack.Screen
+            name="DonateMore"
+            component={DonateMore}
+            options={{ headerShown: false }}
+          />
+          <stack.Screen
+            name="Leadboard"
+            component={Leadboard}
+            options={{ headerShown: false }}
+          />
+          <stack.Screen
+            name="DonatePay"
+            component={DonatePay}
+            options={{ headerShown: false }}
+          />
+          <stack.Screen
+            name="AI"
+            component={AI}
+            options={{ headerShown: false }}
+          />
+          <stack.Screen
+            name="PlantTree"
+            component={PlantTree}
+            options={{ headerShown: false }}
+          />
+          <stack.Screen
+            name="PlantPay"
+            component={PlantPay}
             options={{ headerShown: false }}
           />
           <stack.Screen name="Account" component={Account} />

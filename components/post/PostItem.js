@@ -23,7 +23,7 @@ const ShopItem = ({ item }) => {
       const email = await AsyncStorage.getItem("EMAIL");
       const userId = await AsyncStorage.getItem("USERID");
       const user = await getDoc(doc(store, "users", userId));
-      setUserName(user.data().name);
+      // setUserName(user.data().name);
       //   setImageURL(user);
     };
     getDetails();
@@ -35,7 +35,6 @@ const ShopItem = ({ item }) => {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
             padding: 15,
             alignItems: "center",
           }}
@@ -50,16 +49,17 @@ const ShopItem = ({ item }) => {
             ) : (
               <UserAvatar
                 style={styles.userAvtar}
-                name={name}
+                name={item.data.name}
                 bgColor={"#BBD6B8"}
-                size={80}
+                size={40}
               />
             )}
           </View>
-          <View>
-            <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+          <View style={{ alignSelf: "center", marginLeft: 15, marginTop: -6 }}>
+            <Text style={{ fontSize: 15, fontWeight: "bold" }}>
               {item.data.name}
             </Text>
+            <Text>{item.data.email}</Text>
           </View>
         </View>
         <View>
@@ -67,7 +67,7 @@ const ShopItem = ({ item }) => {
             style={{
               fontSize: 30,
               fontWeight: "bold",
-              marginLeft: "7%",
+              marginLeft: "5%",
               marginBottom: 10,
             }}
           >
@@ -88,10 +88,10 @@ const ShopItem = ({ item }) => {
             style={{ height: "100%", width: "100%", borderRadius: 10 }}
           />
         </View>
-        <View>
+        <View style={{ width: "90%", alignSelf: "center" }}>
           <Text
             style={{
-              fontSize: 18,
+              fontSize: 16,
               marginTop: 20,
               flexWrap: "wrap",
               alignSelf: "center",
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     margin: 15,
   },
   userAvtar: {
-    height: 60,
-    width: 60,
+    height: 40,
+    width: 40,
     borderRadius: 40,
     marginBottom: 10,
   },

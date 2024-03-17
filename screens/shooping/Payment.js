@@ -6,17 +6,30 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
 import { auth, store } from "../../firebase/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useStripe } from "@stripe/stripe-react-native";
 import * as Print from "expo-print";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { shareAsync } from "expo-sharing";
 import { PdfCode } from "./Pdf.js";
 const Payment = ({ route }) => {
+  const applyCoupon = () => {
+    if (!couponApplied && coupon === "ABC678BDC") {
+      // Apply a 10% discount
+      setDiscount(total * 0.1);
+      setCouponApplied(true);
+      Alert.alert("Coupon applied successfully!");
+    } else {
+      Alert.alert("Invalid coupon or already applied.");
+    }
+  };
+  // const totalWithDiscount = total - discount;
+
   const printToFile = async () => {
     let html = PdfCode(productName, userName, total, PaymentType, email);
     try {
@@ -32,6 +45,9 @@ const Payment = ({ route }) => {
     }
   };
   console.log(email);
+  const [discount, setDiscount] = useState(0);
+  const [coupon, setCoupon] = useState("");
+  const [counter, setCounter] = useState(0);
   const [PaymentType, setPaymentType] = useState("online");
   const isFocused = useIsFocused();
   const stripe = useStripe();
@@ -39,7 +55,9 @@ const Payment = ({ route }) => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const { data } = route.params;
+  const [fireShopCounter, setFireShopCounter] = useState(Number);
   const [quantity, setQuantity] = useState(1);
+  const [couponApplied, setCouponApplied] = useState(false);
   const increaseQuantity = () => {
     setQuantity(quantity + 1);
   };
@@ -48,27 +66,20 @@ const Payment = ({ route }) => {
       setQuantity(quantity - 1);
     }
   };
-  const total = data.price * quantity;
+  const total = data.price * quantity - discount;
   useEffect(() => {
     const getDetails = async () => {
       const userId = await AsyncStorage.getItem("USERID");
       const user = await getDoc(doc(store, "users", userId));
       setUserName(user.data().name);
       setEmail(user.data().email);
+      setFireShopCounter(user.data().shopwisely);
+      setLoading(false);
     };
     getDetails();
   }, [isFocused]);
+  const numberFireShopCounter = parseInt(fireShopCounter);
 
-  // useEffect(() => {
-  //   const getDetails = async () => {
-  //     const email = await AsyncStorage.getItem("EMAIL");
-  //     const userId = await AsyncStorage.getItem("USERID");
-  //     const user = await getDoc(doc(store, "users", userId));
-  //     setName(user.data().name);
-  //   };
-  //   getDetails();
-  // }, [isFocused]);
-  console.log(productName);
   const productName = data?.name ?? "DefaultProductName";
   if (productName) {
     // Now you can use productName in your code
@@ -78,7 +89,7 @@ const Payment = ({ route }) => {
   }
   const subscribe = async () => {
     try {
-      const response = await fetch("http://192.168.0.106:8080/pay", {
+      const response = await fetch("http://192.168.1.103:8080/pay", {
         method: "POST",
         body: JSON.stringify({ userName, total, productName }),
         headers: {
@@ -98,13 +109,55 @@ const Payment = ({ route }) => {
         // paymentMethodTypes: ["card"],
       });
       if (presentSheet.error) return Alert.alert(presentSheet.error.message);
+
       Alert.alert("Payment complete, thank you!");
+      await printToFile();
+      const updatedCounter = numberFireShopCounter + 20;
+
+      // Set a loading state to prevent the interval from starting immediately
+      setLoading(true);
+
+      // Delay the shopwisely update by 1 second
+      setTimeout(async () => {
+        const userId = await AsyncStorage.getItem("USERID");
+        await updateDoc(doc(store, "users", userId), {
+          shopwisely: updatedCounter,
+        });
+        setLoading(false); // Reset loading state
+      }, 1000);
+
+      // const userId = await AsyncStorage.getItem("USERID");
+      // await updateDoc(doc(store, "users", userId), {
+      //   shopwisely: updatedCounter,
+      // });
     } catch (err) {
       console.error(err);
       Alert.alert("Something went wrong, try again later!");
     }
   };
+  // const updatedCounter = numberFireShopCounter + 20;
+  // useEffect(() => {
+  //   if (!loading) {
+  //     const timeout = setInterval(() => {
+  //       const setDetails = async () => {
+  //         const counts = Number(updatedCounter);
+  //         const email = await AsyncStorage.getItem("EMAIL");
+  //         const userId = await AsyncStorage.getItem("USERID");
 
+  //         await updateDoc(doc(store, "users", userId), {
+  //           shopwisely: counts,
+  //         }).catch((error) => {
+  //           console.log(error.message);
+  //         });
+  //       };
+
+  //       setDetails();
+  //     }, 1000); // Update every 1 second
+
+  //     return () => clearInterval(timeout);
+  //   }
+  // }, [loading, updatedCounter]);
+  const [loading, setLoading] = useState(true);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -210,6 +263,26 @@ const Payment = ({ route }) => {
           <Text>₹{total}</Text>
         </View>
       </View>
+      <View
+        style={{
+          backgroundColor: "#fff",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: 15,
+          borderRadius: 10,
+          marginTop: 10,
+        }}
+      >
+        <TextInput
+          style={styles.couponInput}
+          placeholder="Enter Coupon"
+          onChangeText={(text) => setCoupon(text)}
+        />
+        <TouchableOpacity style={styles.applyButton} onPress={applyCoupon}>
+          <Text style={styles.applyButtonText}>Apply</Text>
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.paymentContainer} onPress={subscribe}>
         <Text style={{ color: "#fff", fontSize: 30, fontWeight: "600" }}>
@@ -217,9 +290,9 @@ const Payment = ({ route }) => {
         </Text>
       </TouchableOpacity>
       <View style={styles.invoiceContainer}>
-        <TouchableOpacity style={styles.btn} onPress={printToFile}>
+        {/* <TouchableOpacity style={styles.btn} onPress={printToFile}>
           <Text style={styles.btnText}>Download Invoice</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -304,7 +377,7 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 10,
     bottom: 10,
-    marginTop: "35%",
+    marginTop: "30%",
   },
 });
 

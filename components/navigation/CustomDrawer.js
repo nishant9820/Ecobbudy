@@ -75,25 +75,30 @@ const CustomDrawer = (props) => {
           //   source={require("../assets/Images/background.jpg")}
           style={{ padding: 20 }}
         >
-          {/* <Image
-            alt="Not find"
-            // source={require("../assets/Images/user.jpg")}
-            style={styles.userAvatar}
-          /> */}
-          {image ? (
-            <Image
-              alt="Not find"
-              source={{ uri: imageUrl }}
-              style={styles.userAvtar}
-            />
-          ) : (
-            <UserAvatar
-              style={styles.userAvtar}
-              name={name}
-              bgColor={"#BBD6B8"}
-              size={80}
-            />
-          )}
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Update", {
+                name,
+                image,
+                uid,
+              });
+            }}
+          >
+            {image ? (
+              <Image
+                alt="Not find"
+                source={{ uri: imageUrl }}
+                style={styles.userAvtar}
+              />
+            ) : (
+              <UserAvatar
+                style={styles.userAvtar}
+                name={name}
+                bgColor={"#BBD6B8"}
+                size={80}
+              />
+            )}
+          </TouchableOpacity>
           <Text
             style={{
               color: "#fff",
@@ -169,13 +174,7 @@ const CustomDrawer = (props) => {
           //       console.log(error);
           //     });
           // }}
-          onPress={() => {
-            navigation.navigate("Update", {
-              name,
-              image,
-              uid,
-            });
-          }}
+          onPress={logOut}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Ionicons name="exit-outline" size={22} />

@@ -33,13 +33,14 @@ const CreateAccount = () => {
           name: fName,
           email: email,
           imageUrl: "",
-          steps: "",
-          walkpoints: "",
-          distancewalked: "",
-          shopwisely: yellow,
-          plantatree: blue,
-          saveenergy: pink,
-          walkmore: orange,
+          steps: 0,
+          walkpoints: 0,
+          distancewalked: 0,
+          shopwisely: 0,
+          plantatree: 0,
+          saveenergy: 0,
+          walkmore: 0,
+          totalpoints: 0,
         }).catch((error) => {
           console.log(error.message);
         });
@@ -63,7 +64,7 @@ const CreateAccount = () => {
           inputMode="text"
           onChangeText={(text) => setFName(text)}
         />
-        <View style={{ flexDirection: "row", columnGap: 2 }}>
+        {/* <View style={{ flexDirection: "row", columnGap: 2 }}>
           <TextInput
             style={{ borderBottomWidth: 1 }}
             // placeholder="Email"
@@ -88,10 +89,10 @@ const CreateAccount = () => {
             inputMode="text"
             onChangeText={(text) => setBlue(text)}
           />
-        </View>
+        </View> */}
         <TextInput
           style={[styles.textContainer]}
-          // placeholder="Email"
+          placeholder="Email"
           inputMode="text"
           onChangeText={(text) => setEmail(text)}
         />

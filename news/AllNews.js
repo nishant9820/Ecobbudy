@@ -53,7 +53,7 @@ const AllNews = ({ navigation }) => {
           flexDirection: "row",
         }}
       >
-        <View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             <View>
               <Text style={{ color: "#000", fontSize: 25, fontWeight: 700 }}>
@@ -71,6 +71,12 @@ const AllNews = ({ navigation }) => {
                 @ 40% off
               </Text>
             </View>
+          </View>
+          <View>
+            <Image
+              source={require("../assets/Plantt.png")}
+              style={{ width: 130, height: 130, marginLeft: 5 }}
+            />
           </View>
         </View>
       </View>

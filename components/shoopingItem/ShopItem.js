@@ -189,7 +189,7 @@ const ShopItem = ({ item }) => {
               borderRadius: 10,
             }}
           >
-            <Text style={{ fontSize: 20, color: "#fff" }}>Buy</Text>
+            <Text style={{ fontSize: 20, color: "#fff" }}>Add</Text>
           </TouchableOpacity>
           <View>
             {userName ? (

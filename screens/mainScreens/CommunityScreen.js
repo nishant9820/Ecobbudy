@@ -116,7 +116,7 @@ const MyDropdownMenu = () => {
     };
     getDetails();
   }, [isFocused]);
-  console.log(name);
+  // console.log(name);
 
   const submit = async () => {
     try {
@@ -384,12 +384,13 @@ const styles = StyleSheet.create({
   },
   modalContainer2: {
     width: "80%",
-    height: 500,
+    // height: 500,
     backgroundColor: "white",
     paddingHorizontal: 20,
     borderRadius: 20,
     elevation: 20,
     justifyContent: "center",
+    padding: 20,
   },
   moduleheader: {
     width: "100%",

@@ -85,7 +85,13 @@ const UpdateUser = ({ navigation }) => {
   };
 
   return (
-    <View style={{ width: 360, justifyContent: "center" }}>
+    <View
+      style={{
+        width: 360,
+        justifyContent: "center",
+        backgroundColor: "#00332b",
+      }}
+    >
       <View style={{ alignItems: "center" }}>
         <Text style={styles.heading}>Update Details</Text>
       </View>
@@ -137,7 +143,7 @@ const styles = StyleSheet.create({
     // marginLeft: "3.5%",
   },
   submitButton: {
-    backgroundColor: "#064F60",
+    backgroundColor: "#00332b",
     borderRadius: 10,
     alignItems: "center",
     width: 290,
